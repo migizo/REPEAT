@@ -22,6 +22,28 @@ REPEATAudioProcessor::REPEATAudioProcessor()
                        )
 #endif
 {
+        juce::AudioParameterInt* intervalParameter = new juce::AudioParameterInt(TRANS("INTERVAL"), TRANS("INTERVAL"), 0, 6, 0, juce::String(),
+            [] (int value, int maximumStringLength) { 
+                if (value == 1) return "1/1";
+                else if (value == 2) return "1/2";
+                else if (value == 3) return "1/4";
+                else if (value == 4) return "1/8";
+                else if (value == 5) return "1/16";
+                else if (value == 6) return "1/32";
+                else return "none";
+
+            },
+            [] (const juce::String& text) {
+                if (text == "1/1") return 1;
+                else if (text == "1/2") return 2;
+                else if (text == "1/4") return 3;
+                else if (text == "1/8") return 4;
+                else if (text == "1/16") return 5;
+                else if (text == "1/32") return 6;
+                else return 0;
+            });
+        addParameter(intervalParameter);
+
 }
 
 REPEATAudioProcessor::~REPEATAudioProcessor()
@@ -148,6 +170,9 @@ void REPEATAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
         }
     }
     
+    // stop -> setInterval(0)
+    isPlaying = info.isPlaying;
+    
     const int bufferSize = buffer.getNumSamples();
     
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
@@ -179,15 +204,13 @@ juce::AudioProcessorEditor* REPEATAudioProcessor::createEditor()
 //==============================================================================
 void REPEATAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+
 }
 
 void REPEATAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+
+               
 }
 
 //==============================================================================

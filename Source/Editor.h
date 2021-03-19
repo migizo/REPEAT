@@ -22,7 +22,6 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-
 //[/Headers]
 
 #include "MomentaryRadioButton.h"
@@ -54,16 +53,18 @@ public:
     // Binary resources:
     static const char* bg_png;
     static const int bg_pngSize;
-    static const char* largeButton_1_1_png;
-    static const int largeButton_1_1_pngSize;
-    static const char* largeButton_1_2_png;
-    static const int largeButton_1_2_pngSize;
-    static const char* largeButton_1_4_png;
-    static const int largeButton_1_4_pngSize;
-    static const char* largeButton_1_8_png;
-    static const int largeButton_1_8_pngSize;
-    static const char* largeButton_1_16_png;
-    static const int largeButton_1_16_pngSize;
+    static const char* largeButton1_png;
+    static const int largeButton1_pngSize;
+    static const char* largeButton2_png;
+    static const int largeButton2_pngSize;
+    static const char* largeButton4_png;
+    static const int largeButton4_pngSize;
+    static const char* largeButton8_png;
+    static const int largeButton8_pngSize;
+    static const char* largeButton16_png;
+    static const int largeButton16_pngSize;
+    static const char* largeButton32_png;
+    static const int largeButton32_pngSize;
 
 
 private:

@@ -3,7 +3,7 @@
 <JUCERPROJECT id="CZeFIu" name="REPEAT" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" bundleIdentifier="com.revista.repeat"
               pluginManufacturer="REVISTA" pluginManufacturerCode="RVST" pluginCode="Rept"
-              aaxIdentifier="com.revista.repeat">
+              aaxIdentifier="com.revista.repeat" pluginAUIsSandboxSafe="1">
   <MAINGROUP id="THa8ys" name="REPEAT">
     <GROUP id="{4366A651-E83E-0228-7F8B-AEF6E7AD8E68}" name="Source">
       <FILE id="s29nmv" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -47,8 +47,8 @@
     </VS2017>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="REPEAT"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="REPEAT"/>
+        <CONFIGURATION isDebug="1" optimisation="1" name="Debug" targetName="REPEAT"/>
+        <CONFIGURATION isDebug="0" optimisation="3" name="Release" targetName="REPEAT"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../modules"/>
