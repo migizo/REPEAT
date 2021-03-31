@@ -72,6 +72,9 @@ private:
     void timerCallback() override;
     REPEATAudioProcessor& processor;
 
+    juce::AudioProcessorValueTreeState& valueTreeState;
+    std::unique_ptr<MomentaryRadioButtonAttachment> momentaryRadioButtonAttachment;
+
     //[/UserVariables]
 
     //==============================================================================

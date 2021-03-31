@@ -10,6 +10,8 @@
 
 #include <JuceHeader.h>
 #include "Repeat.h"
+#include <cmath>
+
 //==============================================================================
 /**
 */
@@ -55,8 +57,30 @@ public:
 
     std::vector<Repeat> repeat;
     bool isPlaying = false;
+    
+    juce::AudioProcessorValueTreeState parameters;
+    juce::AudioProcessorValueTreeState::Listener* listener;
+
 private:
 
+    std::atomic<float>* intervalParameter = nullptr;
+    
+    class ParameterListener : public juce::AudioProcessorValueTreeState::Listener {
+    public:
+        ParameterListener(REPEATAudioProcessor& _p) : p(_p){}
+        void parameterChanged(const juce::String& parameterID, float newValue) override {
+           /* if (parameterID == "INTERVAL")*/
+            
+            int rounded = juce::roundToInt(newValue);
+            for (int i = 0; i < p.repeat.size(); i++) {
+                if (rounded == 0) p.repeat[i].setInterval(0);
+                else p.repeat[i].setInterval(std::pow(2, rounded - 1));
+                
+            }
+        }
+    private:
+        REPEATAudioProcessor& p;
+    };
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (REPEATAudioProcessor)
 };

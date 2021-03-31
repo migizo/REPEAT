@@ -28,7 +28,7 @@
 
 //==============================================================================
 Editor::Editor (REPEATAudioProcessor& p)
-    : AudioProcessorEditor(&p), processor(p)
+    : AudioProcessorEditor(&p), processor(p), valueTreeState(p.parameters)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -41,7 +41,6 @@ Editor::Editor (REPEATAudioProcessor& p)
 
     //[UserPreSize]
     juce::AudioProcessorParameter* param = processor.getParameters().getReference(0);
-    momentaryRadioButton->setValue((double)param->getValue());
     //[/UserPreSize]
 
     setSize (340, 246);
@@ -50,6 +49,8 @@ Editor::Editor (REPEATAudioProcessor& p)
     //[Constructor] You can add your own custom stuff here..
     startTimerHz(60);
 
+    momentaryRadioButtonAttachment.reset(new MomentaryRadioButtonAttachment(valueTreeState, "INTERVAL", *momentaryRadioButton.get()));
+
     //[/Constructor]
 }
 
@@ -57,6 +58,7 @@ Editor::~Editor()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     stopTimer();
+    momentaryRadioButtonAttachment = nullptr;
     //[/Destructor_pre]
 
     momentaryRadioButton = nullptr;
@@ -103,37 +105,12 @@ void Editor::resized()
 
 void Editor::timerCallback() {
 
-    // gui -> parameter
-    if (momentaryRadioButton->checkChange()) {
-        processor.getParameters().getReference(0)->setValueNotifyingHost(juce::jmap((double)momentaryRadioButton->getValue(), 0.0, 6.0, 0.0, 1.0));
-    }
-
     // check play
     static bool lastIsPlaying = false;
     if (! processor.isPlaying) {
-        processor.getParameters().getReference(0)->setValueNotifyingHost(0);
+        // processor.getParameters().getReference(0)->setValueNotifyingHost(0);
     }
     lastIsPlaying = processor.isPlaying;
-
-    // parameter -> gui,processor
-    static int lastInterval = 0;
-    int interval = juce::roundToInt(juce::jmap((double)processor.getParameters().getReference(0)->getValue(), 0.0, 1.0, 0.0, 6.0));
-
-    if (interval != lastInterval) {
-        if (momentaryRadioButton->getValue() != interval) momentaryRadioButton->setValue(interval);
-        for (int i = 0; i < processor.repeat.size(); i++) {
-            if (interval == 0) processor.repeat[i].setInterval(0);
-            else if (interval == 1) processor.repeat[i].setInterval(1);
-            else if (interval == 2) processor.repeat[i].setInterval(2);
-            else if (interval == 3) processor.repeat[i].setInterval(4);
-            else if (interval == 4) processor.repeat[i].setInterval(8);
-            else if (interval == 5) processor.repeat[i].setInterval(16);
-            else if (interval == 6) processor.repeat[i].setInterval(32);
-
-        }
-    }
-    lastInterval = interval;
-
 }
 
 //[/MiscUserCode]
@@ -150,7 +127,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="Editor" componentName=""
                  parentClasses="public juce::AudioProcessorEditor, private juce::Timer"
-                 constructorParams="REPEATAudioProcessor&amp; p" variableInitialisers="AudioProcessorEditor(&amp;p), processor(p)"
+                 constructorParams="REPEATAudioProcessor&amp; p" variableInitialisers="AudioProcessorEditor(&amp;p), processor(p), valueTreeState(p.parameters)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="340" initialHeight="246">
   <BACKGROUND backgroundColour="ff323e44">

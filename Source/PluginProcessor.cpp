@@ -19,35 +19,46 @@ REPEATAudioProcessor::REPEATAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+#else 
+    :
 #endif
-{
-        juce::AudioParameterInt* intervalParameter = new juce::AudioParameterInt(TRANS("INTERVAL"), TRANS("INTERVAL"), 0, 6, 0, juce::String(),
-            [] (int value, int maximumStringLength) { 
-                if (value == 1) return "1/1";
-                else if (value == 2) return "1/2";
-                else if (value == 3) return "1/4";
-                else if (value == 4) return "1/8";
-                else if (value == 5) return "1/16";
-                else if (value == 6) return "1/32";
-                else return "none";
+        parameters(*this, nullptr, juce::Identifier(JucePlugin_Name), // processor, undoManager, valueTreeType, parameterLayout
+        {
+            std::make_unique<juce::AudioParameterFloat>("INTERVAL", "INTERVAL", juce::NormalisableRange<float>(0.0, 6.0, 1.0), 0.0, juce::String(), juce::AudioProcessorParameter::genericParameter,
+                [] (float value, int maximumStringLength) { 
+                    if (value == 1) return "1/1";
+                    else if (value == 2) return "1/2";
+                    else if (value == 3) return "1/4";
+                    else if (value == 4) return "1/8";
+                    else if (value == 5) return "1/16";
+                    else if (value == 6) return "1/32";
+                    else return "none";
 
-            },
-            [] (const juce::String& text) {
-                if (text == "1/1") return 1;
-                else if (text == "1/2") return 2;
-                else if (text == "1/4") return 3;
-                else if (text == "1/8") return 4;
-                else if (text == "1/16") return 5;
-                else if (text == "1/32") return 6;
-                else return 0;
-            });
-        addParameter(intervalParameter);
+                },
+                [] (const juce::String& text) {
+                    if (text == "1/1") return 1;
+                    else if (text == "1/2") return 2;
+                    else if (text == "1/4") return 3;
+                    else if (text == "1/8") return 4;
+                    else if (text == "1/16") return 5;
+                    else if (text == "1/32") return 6;
+                    else return 0;
+                }
+            )
+        })   
+{       
+    intervalParameter = parameters.getRawParameterValue("INTERVAL");
+    listener = new ParameterListener(*this);
+    parameters.addParameterListener("INTERVAL", listener);
 
 }
 
 REPEATAudioProcessor::~REPEATAudioProcessor()
 {
+    parameters.removeParameterListener("INTERVAL", listener);
+    listener = nullptr;
+    intervalParameter = nullptr;
 }
 
 //==============================================================================
@@ -170,7 +181,6 @@ void REPEATAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
         }
     }
     
-    // stop -> setInterval(0)
     isPlaying = info.isPlaying;
     
     const int bufferSize = buffer.getNumSamples();
@@ -204,13 +214,24 @@ juce::AudioProcessorEditor* REPEATAudioProcessor::createEditor()
 //==============================================================================
 void REPEATAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-
+    // load from xml
+    auto state = parameters.copyState();
+    std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void REPEATAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-
-               
+    // save to xml
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+ 
+    if (xmlState.get() != nullptr) 
+    {
+        if (xmlState->hasTagName (parameters.state.getType())) 
+        {
+            parameters.replaceState (juce::ValueTree::fromXml (*xmlState));
+        }
+    }       
 }
 
 //==============================================================================
