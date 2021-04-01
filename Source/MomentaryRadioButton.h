@@ -33,9 +33,11 @@ public:
     // void resized() override{};
     
     void mouseMove(const juce::MouseEvent& event) override;
+    void mouseDown(const juce::MouseEvent& event) override;
     void mouseDrag(const juce::MouseEvent& event) override;
     void mouseUp(const juce::MouseEvent& event) override ;
     void mouseExit(const juce::MouseEvent& event) override;
+    void onMouseSelect(const juce::MouseEvent& event);
     
     void setState(int newState, const NotificationType notification);
     void setState();

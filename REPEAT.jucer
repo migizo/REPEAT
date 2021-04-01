@@ -17,10 +17,6 @@
           file="Source/ButtonResource.h"/>
     <FILE id="tj9QLm" name="Editor.cpp" compile="1" resource="0" file="Source/Editor.cpp"/>
     <FILE id="edZ5Bm" name="Editor.h" compile="0" resource="0" file="Source/Editor.h"/>
-    <FILE id="v4WsBo" name="_MomentaryRadioButton.cpp" compile="1" resource="0"
-          file="Source/_MomentaryRadioButton.cpp"/>
-    <FILE id="svqlWs" name="_MomentaryRadioButton.h" compile="0" resource="0"
-          file="Source/_MomentaryRadioButton.h"/>
     <FILE id="hEReqX" name="Repeat.h" compile="0" resource="0" file="Source/Repeat.h"/>
     <FILE id="Uc9WcL" name="MomentaryRadioButton.cpp" compile="1" resource="0"
           file="Source/MomentaryRadioButton.cpp"/>

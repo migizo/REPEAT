@@ -58,23 +58,15 @@ void MomentaryRadioButton::mouseMove(const juce::MouseEvent& event) {
         }
     }
 }
+
+//------------------------------------------------------------------------
+void MomentaryRadioButton::mouseDown(const juce::MouseEvent& event) {
+	onMouseSelect(event);
+}
     
 //------------------------------------------------------------------------
 void MomentaryRadioButton::mouseDrag(const juce::MouseEvent& event) {
-	
-    int mouseX = event.position.x;
-    isClick = true;
-    int _state = 0;
-    for (int i = 0; i < itemNum; i++) {
-        if (itemSize * i <= mouseX && mouseX < itemSize * (i + 1)) {
-            _state = i + 1;
-            hoverID = 0;
-        }
-    }
-    if (state != _state) {
-        state = _state;
-       	listeners.call(&Listener::stateChanged, this, state);
-    }
+	onMouseSelect(event);
 }
     
 //------------------------------------------------------------------------
@@ -103,6 +95,23 @@ void MomentaryRadioButton::mouseExit(const juce::MouseEvent& event) {
     hoverID = 0;
 }
     
+//------------------------------------------------------------------------
+void MomentaryRadioButton::onMouseSelect(const juce::MouseEvent& event) {
+    int mouseX = event.position.x;
+    isClick = true;
+    int _state = 0;
+    for (int i = 0; i < itemNum; i++) {
+        if (itemSize * i <= mouseX && mouseX < itemSize * (i + 1)) {
+            _state = i + 1;
+            hoverID = 0;
+        }
+    }
+    if (state != _state) {
+        state = _state;
+       	listeners.call(&Listener::stateChanged, this, state);
+    }
+}
+
 //------------------------------------------------------------------------
 void MomentaryRadioButton::setState(int newState, const NotificationType notification) {
     if (newState >= 0)
